@@ -1,71 +1,87 @@
-import React, { useEffect, useState } from 'react';
-import { useRecipes } from '../hooks/useRecipes';
-import { RecipeCard } from './RecipeCard';
-import { Text, Spinner, SimpleGrid, Center, VStack, Divider } from '@chakra-ui/react';
-import { useAuth } from '../hooks/useAuth'
+import React, { useContext } from "react";
+import { useRecipes } from "../hooks/useRecipes";
+import { RecipeCard } from "./RecipeCard";
 import {
-    StringParam,
-    NumberParam,
-    useQueryParams,
-    ArrayParam,
-    withDefault,
-} from 'use-query-params';
-import { stringify } from 'query-string';
-import { Pagination } from './Pagination';
-import { SearchBar } from './SearchBar';
+  Text,
+  Spinner,
+  SimpleGrid,
+  Center,
+  VStack,
+  Divider,
+} from "@chakra-ui/react";
+import { useAuth } from "../hooks/useAuth";
+import {
+  StringParam,
+  NumberParam,
+  useQueryParams,
+  ArrayParam,
+  withDefault,
+} from "use-query-params";
+import { stringify } from "query-string";
+import { Pagination } from "./Pagination";
+import { SearchBar } from "./SearchBar";
+import { AuthContext } from "../contexts/authContext";
 
 export const Recipes: React.FC = () => {
-    const { token } = useAuth();
+  const { user } = useContext(AuthContext);
 
-    const [query, setQuery] = useQueryParams({
-        searchText: StringParam,
-        pageNumber: NumberParam,
-        pageSize: NumberParam,
-        tags: withDefault(ArrayParam, []),
-    });
+  const [query, setQuery] = useQueryParams({
+    searchText: StringParam,
+    pageNumber: NumberParam,
+    pageSize: NumberParam,
+    tags: withDefault(ArrayParam, []),
+  });
 
-    const { pageNumber, tags } = query
+  const { pageNumber, tags } = query;
 
-    const { data, loading, empty } = useRecipes(token, stringify(query), true)
+  const { data, loading, empty } = useRecipes(
+    user?.token,
+    stringify(query),
+    true
+  );
 
-    const onPageClick = (num: number) => {
-        setQuery({ ...query, pageNumber: num })
-    }
+  const onPageClick = (num: number) => {
+    setQuery({ ...query, pageNumber: num });
+  };
 
-    const onTagClick = (tag: string) => {
-        setQuery({ ...query, tags: [...tags, tag] })
-    }
+  const onTagClick = (tag: string) => {
+    setQuery({ ...query, tags: [...tags, tag] });
+  };
 
-    return (
-        <React.Fragment>
-            <SearchBar />
-            <Divider />
-            {loading ?
-                <Spinner /> :
-                empty ?
-                    <Text>No recipes</Text> :
-                    <Center>
-                        <VStack>
-                            <Text>Total recipes: {data!.totalCount}</Text>
-                            <SimpleGrid columns={{ sm: 2, md: 3 }} spacing={2}>
-                                {data!.recipes.map(recipe => (
-                                    < RecipeCard key={recipe.title} recipe={recipe} onTagClick={onTagClick} />
-                                ))}
-                            </SimpleGrid>
-                            <Pagination
-                                hasNext={data!.hasNext}
-                                hasPrevious={data!.hasPrevious}
-                                totalPage={data!.totalPages}
-                                onPageClick={onPageClick}
-                                currentPage={pageNumber}
-                            />
-                        </VStack>
-                    </Center>
-            }
-
-        </React.Fragment>
-    );
-}
+  return (
+    <React.Fragment>
+      <SearchBar />
+      <Divider />
+      {loading ? (
+        <Spinner />
+      ) : empty ? (
+        <Text>No recipes</Text>
+      ) : (
+        <Center>
+          <VStack>
+            <Text>Total recipes: {data!.totalCount}</Text>
+            <SimpleGrid columns={{ sm: 2, md: 3 }} spacing={2}>
+              {data!.recipes.map((recipe) => (
+                <RecipeCard
+                  key={recipe.title}
+                  recipe={recipe}
+                  onTagClick={onTagClick}
+                />
+              ))}
+            </SimpleGrid>
+            <Pagination
+              hasNext={data!.hasNext}
+              hasPrevious={data!.hasPrevious}
+              totalPage={data!.totalPages}
+              onPageClick={onPageClick}
+              currentPage={pageNumber}
+            />
+          </VStack>
+        </Center>
+      )}
+    </React.Fragment>
+  );
+};
 
 //<div>
 //    <h1>Hello, world!</h1>

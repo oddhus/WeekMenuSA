@@ -1,4 +1,4 @@
-﻿import {
+import {
   Button,
   FormControl,
   FormErrorMessage,
@@ -7,19 +7,21 @@
   useToast,
 } from "@chakra-ui/react";
 import { Field, FieldProps, Form, Formik, FormikProps } from "formik";
-import React from "react";
+import React, { useContext } from "react";
 import { useHistory } from "react-router-dom";
 import * as Yup from "yup";
+import { AuthContext } from "../contexts/authContext";
+import { User } from "../types";
 
 interface FormValues {
   username: string;
   password: string;
-  repeatPassword: string;
 }
 
-export default function Register() {
+export default function Login() {
   const toast = useToast();
   const history = useHistory();
+  const { login } = useContext(AuthContext);
 
   const SignupSchema = Yup.object().shape({
     username: Yup.string()
@@ -30,27 +32,29 @@ export default function Register() {
       .min(8, "Too Short!")
       .max(256, "Too Long!")
       .required("Required"),
-    repeatPassword: Yup.string().oneOf(
-      [Yup.ref("password"), null],
-      "Passwords must match"
-    ),
   });
 
   return (
     <Formik
-      initialValues={{ username: "", password: "", repeatPassword: "" }}
+      initialValues={{ username: "", password: "" }}
       onSubmit={async (values, actions) => {
         console.log(values);
-        const response = await fetch("user/register", {
+        const response = await fetch("user/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(values),
         });
 
         if (response.ok) {
+          const userData: User = await response.json();
+          if (userData && login) {
+            console.log(userData);
+            login(userData);
+          }
+
           toast({
-            title: "Account Created",
-            description: "Your account was successfully created",
+            title: "Welcome back!",
+            description: "You was successfully logged on",
             status: "success",
             duration: 4000,
             isClosable: true,
@@ -60,7 +64,7 @@ export default function Register() {
         } else {
           toast({
             title: "Error",
-            description: "Could not create the account, please try again later",
+            description: "Could sign in, please try again later",
             status: "error",
             duration: 4000,
             isClosable: true,
@@ -104,36 +108,13 @@ export default function Register() {
                 </FormControl>
               )}
             </Field>
-            <Field name="repeatPassword">
-              {({ form, field }: FieldProps) => (
-                <FormControl
-                  isInvalid={
-                    !!form.errors?.repeatPassword &&
-                    !!form.touched?.repeatPassword
-                  }
-                >
-                  <FormLabel htmlFor="repeatPassword">
-                    Repeat Password
-                  </FormLabel>
-                  <Input
-                    {...field}
-                    id="repeatPassword"
-                    placeholder="Repeat Password"
-                    type="password"
-                  />
-                  <FormErrorMessage>
-                    {form.errors.repeatPassword}
-                  </FormErrorMessage>
-                </FormControl>
-              )}
-            </Field>
             <Button
               mt={4}
               colorScheme="teal"
               isLoading={isSubmitting}
               type="submit"
             >
-              Register
+              Login
             </Button>
           </Form>
         );

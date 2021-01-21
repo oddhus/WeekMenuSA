@@ -1,101 +1,125 @@
-import React, { useState } from 'react';
-import { Text, SimpleGrid, Center, VStack, Button, useDisclosure, Box, SkeletonCircle, SkeletonText } from '@chakra-ui/react';
-import { useAuth } from '../hooks/useAuth'
-import { useWeekmenu } from '../hooks/useWeekmenu';
-import { generateShoppingList } from '../utils/shoppingListGenerator';
-import { MiniRecipeCard } from './MiniRecipeCard';
-import { DisplayIngredients } from './DisplayIngredients';
-import { useUserRecipes } from '../hooks/useUserRecipes';
-import { RecipePickerModal } from './RecipePickerModal';
-import { useRecipes } from '../hooks/useRecipes';
-import { stringify } from 'query-string';
+import React, { useContext, useState } from "react";
+import {
+  Text,
+  SimpleGrid,
+  Center,
+  VStack,
+  Button,
+  useDisclosure,
+  Box,
+  SkeletonCircle,
+  SkeletonText,
+} from "@chakra-ui/react";
+import { useAuth } from "../hooks/useAuth";
+import { useWeekmenu } from "../hooks/useWeekmenu";
+import { generateShoppingList } from "../utils/shoppingListGenerator";
+import { MiniRecipeCard } from "./MiniRecipeCard";
+import { DisplayIngredients } from "./DisplayIngredients";
+import { useUserRecipes } from "../hooks/useUserRecipes";
+import { RecipePickerModal } from "./RecipePickerModal";
+import { useRecipes } from "../hooks/useRecipes";
+import { stringify } from "query-string";
+import { AuthContext } from "../contexts/authContext";
 
 interface Query {
-    searchText: string | undefined
-    pageSize: number
+  searchText: string | undefined;
+  pageSize: number;
 }
 
 export const Home: React.FC = () => {
-    const [getShoppingList, setGetShoppingList] = useState(false)
-    const [currentItem, setCurrentItem] = useState<number | undefined>()
-    const [type, setType] = useState<"search" | "myrecipe" | undefined>()
-    const [query, setQuery] = useState<Query>({
-        searchText: undefined,
-        pageSize: 10
-    })
+  const [getShoppingList, setGetShoppingList] = useState(false);
+  const [currentItem, setCurrentItem] = useState<number | undefined>();
+  const [type, setType] = useState<"search" | "myrecipe" | undefined>();
+  const [query, setQuery] = useState<Query>({
+    searchText: undefined,
+    pageSize: 10,
+  });
 
-    const { isOpen, onOpen, onClose } = useDisclosure()
-    const { token } = useAuth();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { user } = useContext(AuthContext);
 
-    const { loading, data, onSwapAll, onSwap, onIdSwap } = useWeekmenu(5, token)
+  const { loading, data, onSwapAll, onSwap, onIdSwap } = useWeekmenu(
+    5,
+    user?.token
+  );
 
-    const { data: myRecipes, loading: myRecipesLoading, error: myRecipeError } = useUserRecipes(isOpen && type === "myrecipe" ? token : null)
+  const {
+    data: myRecipes,
+    loading: myRecipesLoading,
+    error: myRecipeError,
+  } = useUserRecipes(isOpen && type === "myrecipe" ? user?.token : null);
 
-    const { data: searchRecipes, loading: searchRecipesLoading, error: searchRecipeError } = useRecipes(token, stringify(query), isOpen && type === "search")
+  const {
+    data: searchRecipes,
+    loading: searchRecipesLoading,
+    error: searchRecipeError,
+  } = useRecipes(user?.token, stringify(query), isOpen && type === "search");
 
-    const pickRecipes = async (newId: number) => {
-        if (currentItem) {
-            await onIdSwap(currentItem, newId)
-        }
+  const pickRecipes = async (newId: number) => {
+    if (currentItem) {
+      await onIdSwap(currentItem, newId);
     }
+  };
 
-    return (
-        <React.Fragment>
-            <RecipePickerModal
-                myRecipes={myRecipes}
-                searchRecipes={searchRecipes}
-                loading={type === "myrecipe" ? myRecipesLoading : searchRecipesLoading}
-                onIdSwap={pickRecipes}
-                error={type === "myrecipe" ? myRecipeError : searchRecipeError}
-                type={type}
-                isOpen={isOpen}
-                onClose={onClose}
-                setQuery={setQuery}
-                query={query}
-            />
-            <VStack>
-                {loading ?
-                    <SimpleGrid columns={{ sm: 3, md: 5 }} spacing={2}>
-                        {[...Array(5)].map((_, i) => (
-                            <Box padding="10" boxShadow="lg" bg="white" key={i} maxW="sm">
-                                <SkeletonCircle size="24" />
-                                <SkeletonText mt="4" noOfLines={2} spacing="6" />
-                            </Box>
-                        ))}
-                    </SimpleGrid> :
-                    !data ? <Text>No data</Text> :
-                        <Center>
-                            <SimpleGrid columns={{ sm: 3, md: 5 }} spacing={2}>
-                                {data.map(recipe => (
-                                    <MiniRecipeCard
-                                        recipe={recipe}
-                                        key={recipe.id}
-                                        onSwap={onSwap}
-                                        openRecipePicker={onOpen}
-                                        setCurrentItem={setCurrentItem}
-                                        token={token}
-                                        setType={setType}
-                                    />
-                                ))}
-                            </SimpleGrid>
-                        </Center>
-                }
-                <Button onClick={() => onSwapAll()}>Swap all</Button>
-                <Button
-                    onClick={() => setGetShoppingList(getList => !getList)}
-                    disabled={!data}
-                >
-                    {getShoppingList ? "Hide" : "Generate shoppinglist"}
-                </Button>
-                {!!data && getShoppingList && (
-                    < Center >
-                        <DisplayIngredients ingredients={generateShoppingList(data!)} />
-                    </Center>)
-                }
-            </VStack>
-        </React.Fragment>
-    );
-}
+  return (
+    <React.Fragment>
+      <RecipePickerModal
+        myRecipes={myRecipes}
+        searchRecipes={searchRecipes}
+        loading={type === "myrecipe" ? myRecipesLoading : searchRecipesLoading}
+        onIdSwap={pickRecipes}
+        error={type === "myrecipe" ? myRecipeError : searchRecipeError}
+        type={type}
+        isOpen={isOpen}
+        onClose={onClose}
+        setQuery={setQuery}
+        query={query}
+      />
+      <VStack>
+        {loading ? (
+          <SimpleGrid columns={{ sm: 3, md: 5 }} spacing={2}>
+            {[...Array(5)].map((_, i) => (
+              <Box padding="10" boxShadow="lg" bg="white" key={i} maxW="sm">
+                <SkeletonCircle size="24" />
+                <SkeletonText mt="4" noOfLines={2} spacing="6" />
+              </Box>
+            ))}
+          </SimpleGrid>
+        ) : !data ? (
+          <Text>No data</Text>
+        ) : (
+          <Center>
+            <SimpleGrid columns={{ sm: 3, md: 5 }} spacing={2}>
+              {data.map((recipe) => (
+                <MiniRecipeCard
+                  recipe={recipe}
+                  key={recipe.id}
+                  onSwap={onSwap}
+                  openRecipePicker={onOpen}
+                  setCurrentItem={setCurrentItem}
+                  token={user?.token}
+                  setType={setType}
+                />
+              ))}
+            </SimpleGrid>
+          </Center>
+        )}
+        <Button onClick={() => onSwapAll()}>Swap all</Button>
+        <Button
+          onClick={() => setGetShoppingList((getList) => !getList)}
+          disabled={!data}
+        >
+          {getShoppingList ? "Hide" : "Generate shoppinglist"}
+        </Button>
+        {!!data && getShoppingList && (
+          <Center>
+            <DisplayIngredients ingredients={generateShoppingList(data!)} />
+          </Center>
+        )}
+      </VStack>
+    </React.Fragment>
+  );
+};
 
 //<div>
 //    <h1>Hello, world!</h1>

@@ -44,6 +44,7 @@ namespace WeekMenuSA.Data
                 .Include(r => r.Ingredients)
                 .Include(r => r.Votes)
                 .Include(r => r.Tags)
+                .OrderBy(r => r.Id)
                 .Skip(offset)
                 .FirstOrDefault();
         }
@@ -57,6 +58,7 @@ namespace WeekMenuSA.Data
                 .Include(r => r.Ingredients)
                 .Include(r => r.Votes)
                 .Include(r => r.Tags)
+                .OrderBy(r => r.Id)
                 .Skip(offset)
                 .Take(amount);
         }
