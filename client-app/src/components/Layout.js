@@ -1,18 +1,16 @@
-import { Container } from '@chakra-ui/react';
-import React, { Component } from 'react';
-import { NavBar } from './navbar/NavBar';
+import { Container } from "@chakra-ui/react";
+import React, { Component } from "react";
+import { NavBar } from "./navbar/NavBar";
 
 export class Layout extends Component {
-    static displayName = Layout.name;
+  static displayName = Layout.name;
 
-    render() {
-        return (
-            <div>
-                <NavBar />
-                <Container>
-                    {this.props.children}
-                </Container>
-            </div>
-        );
-    }
+  render() {
+    return (
+      <div>
+        <NavBar />
+        <Container maxW="xl">{this.props.children}</Container>
+      </div>
+    );
+  }
 }

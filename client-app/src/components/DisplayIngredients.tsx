@@ -1,4 +1,4 @@
-﻿import { Box, Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
+import { Box, Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
 import React from 'react';
 import { Ingredients } from '../types';
 

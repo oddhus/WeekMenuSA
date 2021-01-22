@@ -1,4 +1,4 @@
-﻿import React from "react"
+import React from "react"
 import { Box, Text } from "@chakra-ui/react"
 
 export const Logo = (props: any) => {

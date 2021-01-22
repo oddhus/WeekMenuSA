@@ -1,7 +1,6 @@
-﻿import React, { useContext } from "react";
+import React, { useContext } from "react";
 import { Route, Redirect, RouteComponentProps } from "react-router-dom";
 import { AuthContext } from "../contexts/authContext";
-import { useAuth } from "../hooks/useAuth";
 
 interface Props {
   component: React.ComponentType<RouteComponentProps<any>>;
@@ -14,7 +13,7 @@ const ProtectedRoute: React.FC<Props> = ({ component: Component, ...rest }) => {
     <Route
       {...rest}
       render={(props) => {
-        if (!isLoggedIn) {
+        if (isLoggedIn) {
           return <Component {...rest} {...props} />;
         } else {
           return (

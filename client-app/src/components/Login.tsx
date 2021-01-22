@@ -7,10 +7,9 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { Field, FieldProps, Form, Formik, FormikProps } from "formik";
-import React, { useContext } from "react";
 import { useHistory } from "react-router-dom";
 import * as Yup from "yup";
-import { AuthContext } from "../contexts/authContext";
+import { useAuth } from "../contexts/authContext";
 import { User } from "../types";
 
 interface FormValues {
@@ -21,8 +20,7 @@ interface FormValues {
 export default function Login() {
   const toast = useToast();
   const history = useHistory();
-  const { login } = useContext(AuthContext);
-
+  const { login } = useAuth();
   const SignupSchema = Yup.object().shape({
     username: Yup.string()
       .min(2, "Too Short!")
@@ -47,20 +45,18 @@ export default function Login() {
 
         if (response.ok) {
           const userData: User = await response.json();
-          if (userData && login) {
-            console.log(userData);
+          if (userData) {
             login(userData);
+            toast({
+              title: "Welcome back!",
+              description: "You was successfully logged on",
+              status: "success",
+              duration: 4000,
+              isClosable: true,
+            });
+
+            history.push("/");
           }
-
-          toast({
-            title: "Welcome back!",
-            description: "You was successfully logged on",
-            status: "success",
-            duration: 4000,
-            isClosable: true,
-          });
-
-          history.push("/");
         } else {
           toast({
             title: "Error",
@@ -74,7 +70,7 @@ export default function Login() {
       validationSchema={SignupSchema}
     >
       {(props: FormikProps<FormValues>) => {
-        const { values, isSubmitting } = props;
+        const { isSubmitting } = props;
         return (
           <Form>
             <Field name="username">

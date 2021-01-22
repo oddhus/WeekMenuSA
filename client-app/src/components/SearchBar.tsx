@@ -1,4 +1,4 @@
-﻿import { Box, Button, HStack, Input, Select, Tag, TagCloseButton, TagLabel, VStack, Wrap, WrapItem } from '@chakra-ui/react';
+import { Box, Button, HStack, Input, Select, Tag, TagCloseButton, TagLabel, VStack, Wrap, WrapItem } from '@chakra-ui/react';
 import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps } from 'formik';
 import React, { useEffect, useState } from 'react';
 import { useTags } from '../hooks/useTags';

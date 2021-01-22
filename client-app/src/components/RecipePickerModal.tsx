@@ -1,4 +1,4 @@
-﻿import { Button, Center, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, Text, VStack, HStack, Input } from '@chakra-ui/react';
+import { Button, Center, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, Text, VStack, HStack, Input } from '@chakra-ui/react';
 import React, { SetStateAction, useState } from 'react';
 import { Recipe, RecipePaginated } from '../types';
 import { RecipeListModal } from './RecipeListModal';

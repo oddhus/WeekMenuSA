@@ -10,7 +10,6 @@ import {
   SkeletonCircle,
   SkeletonText,
 } from "@chakra-ui/react";
-import { useAuth } from "../hooks/useAuth";
 import { useWeekmenu } from "../hooks/useWeekmenu";
 import { generateShoppingList } from "../utils/shoppingListGenerator";
 import { MiniRecipeCard } from "./MiniRecipeCard";

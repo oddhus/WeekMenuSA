@@ -1,4 +1,4 @@
-﻿import {
+import {
   Spinner,
   Text,
   Box,

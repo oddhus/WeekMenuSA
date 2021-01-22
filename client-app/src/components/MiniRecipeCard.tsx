@@ -1,4 +1,5 @@
-﻿import {
+import React, { useState } from "react";
+import {
   Box,
   Button,
   Heading,
@@ -15,7 +16,7 @@
   Center,
   Tooltip,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+
 import { Recipe } from "../types";
 import { RepeatIcon } from "@chakra-ui/icons";
 import { useHistory } from "react-router";
@@ -43,6 +44,7 @@ export const MiniRecipeCard: React.FC<Props> = (props) => {
   return (
     <React.Fragment>
       <Box
+        minW="8em"
         maxW="sm"
         borderWidth="1px"
         borderRadius="lg"

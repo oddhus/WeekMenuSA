@@ -1,71 +1,107 @@
-﻿import { Box, Menu, MenuButton, MenuList, Stack, MenuItem as MenuItemChakra, Button, MenuGroup, } from '@chakra-ui/react';
-import React from 'react';
-import { MenuItem } from './MenuItem';
-import { useMediaQuery } from "@chakra-ui/react"
-import { ChevronDownIcon } from '@chakra-ui/icons'
-import { Link } from 'react-router-dom';
+import {
+  Box,
+  Menu,
+  MenuButton,
+  MenuList,
+  Stack,
+  MenuItem as MenuItemChakra,
+  Button,
+} from "@chakra-ui/react";
+import React from "react";
+import { MenuItem } from "./MenuItem";
+import { useMediaQuery } from "@chakra-ui/react";
+import { ChevronDownIcon } from "@chakra-ui/icons";
+import { Link } from "react-router-dom";
+import { useAuth } from "../../contexts/authContext";
 
 interface Props {
-    isOpen: boolean
+  isOpen: boolean;
 }
 
 export const MenuLinks: React.FC<Props> = ({ isOpen }) => {
-    const [isLargerThan420] = useMediaQuery("(min-width: 30em)")
+  const [isLargerThan420] = useMediaQuery("(min-width: 30em)");
 
-    const logoutPath = "/logout"
-    const userName = "hi"
-    const profilePath = "/profile"
+  const { logout, isLoggedIn } = useAuth();
 
-    const buttonMenu = (
-        <Menu>
-            <MenuButton as={Button} rightIcon={<ChevronDownIcon />} fontWeight="normal" colorScheme="pink">
-                Profile
-            </MenuButton>
-            <MenuList>
-                <MenuItemChakra as={Link} to="/create-recipes">Create Recipe</MenuItemChakra>
-                <MenuItemChakra as={Link} to="/my-recipes">My Recipes</MenuItemChakra>
-                <MenuGroup title={`${userName}`}>
-                    <MenuItemChakra as={Link} to={profilePath}>
-                        Account
-                    </MenuItemChakra>
-                    <MenuItemChakra as={Link} to={logoutPath}>
-                        Logout
-                    </MenuItemChakra>
-                </MenuGroup>
-            </MenuList>
-        </Menu>
-    )
+  const allUsers = [
+    { path: "/", name: "Home" },
+    { path: "/recipes", name: "Recipes" },
+  ];
 
-    const listMenu = (
-        <React.Fragment>
-            <MenuItem to="/recipes">Recipe</MenuItem>
-            <MenuItem to="/create-recipes">Create Recipe</MenuItem>
-            <MenuItem to="/my-recipes">My Recipes</MenuItem>
-            <MenuItem to={profilePath}>
-                {`${userName}'s account`}
-            </MenuItem>
-            <MenuItem to={logoutPath}>
-                Logout
-            </MenuItem>
-        </React.Fragment>
-    )
+  const signedIn = [
+    { path: "/create-recipes", name: "Create Recipes" },
+    { path: "/my-recipes", name: "My Recipes" },
+    { path: "/account", name: "Account" },
+  ];
 
-    return (
-        <Box
-            display={{ base: isOpen ? "block" : "none", sm: "block" }}
-            flexBasis={{ base: "100%", sm: "auto" }}
-        >
-            <Stack
-                spacing={8}
-                align="center"
-                justify={["center", "flex-end", "flex-end", "flex-end"]}
-                direction={["column", "row", "row", "row"]}
-                pt={[4, 0, 0, 0]}
-            >
-                <MenuItem to="/">Home</MenuItem>
-                <MenuItem to="/recipes">Recipes</MenuItem>
-                {isLargerThan420 ? buttonMenu : listMenu}
-            </Stack>
-        </Box>
-    );
-}
+  const signedOut = [
+    { path: "/register", name: "Register" },
+    { path: "/login", name: "Login" },
+  ];
+
+  const buttonMenu = (
+    <Menu>
+      <MenuButton
+        as={Button}
+        rightIcon={<ChevronDownIcon />}
+        fontWeight="normal"
+        colorScheme="pink"
+      >
+        Profile
+      </MenuButton>
+      <MenuList>
+        {signedIn.map((route) => (
+          <MenuItemChakra as={Link} to={route.path} key={route.path}>
+            {route.name}
+          </MenuItemChakra>
+        ))}
+        <MenuItemChakra onClick={() => logout()}>Logout</MenuItemChakra>
+      </MenuList>
+    </Menu>
+  );
+
+  const listMenu = (
+    <React.Fragment>
+      {signedIn.map((route) => (
+        <MenuItem key={route.path} to={route.path}>
+          {route.name}
+        </MenuItem>
+      ))}
+      <Button color="currentcolor" onClick={() => logout()}>
+        Logout
+      </Button>
+    </React.Fragment>
+  );
+
+  const signedOutList = (
+    <React.Fragment>
+      {signedOut.map((route) => (
+        <MenuItem key={route.path} to={route.path}>
+          {route.name}
+        </MenuItem>
+      ))}
+    </React.Fragment>
+  );
+
+  return (
+    <Box
+      display={{ base: isOpen ? "block" : "none", sm: "block" }}
+      flexBasis={{ base: "100%", sm: "auto" }}
+    >
+      <Stack
+        spacing={8}
+        align="center"
+        justify={["center", "flex-end", "flex-end", "flex-end"]}
+        direction={["column", "row", "row", "row"]}
+        pt={[4, 0, 0, 0]}
+      >
+        {allUsers.map((route) => (
+          <MenuItem key={route.path} to={route.path}>
+            {route.name}
+          </MenuItem>
+        ))}
+        {!isLoggedIn ? signedOutList : isLargerThan420 ? buttonMenu : listMenu}
+      </Stack>
+    </Box>
+  );
+};

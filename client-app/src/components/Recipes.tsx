@@ -8,8 +8,8 @@ import {
   Center,
   VStack,
   Divider,
+  Box,
 } from "@chakra-ui/react";
-import { useAuth } from "../hooks/useAuth";
 import {
   StringParam,
   NumberParam,
@@ -69,13 +69,15 @@ export const Recipes: React.FC = () => {
                 />
               ))}
             </SimpleGrid>
-            <Pagination
-              hasNext={data!.hasNext}
-              hasPrevious={data!.hasPrevious}
-              totalPage={data!.totalPages}
-              onPageClick={onPageClick}
-              currentPage={pageNumber}
-            />
+            <Box p={4}>
+              <Pagination
+                hasNext={data!.hasNext}
+                hasPrevious={data!.hasPrevious}
+                totalPage={data!.totalPages}
+                onPageClick={onPageClick}
+                currentPage={pageNumber}
+              />
+            </Box>
           </VStack>
         </Center>
       )}

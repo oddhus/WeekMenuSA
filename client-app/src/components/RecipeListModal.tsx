@@ -1,4 +1,4 @@
-﻿import { Button, Heading, Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
+import { Button, Heading, Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
 import { Recipe } from '../types';
 import React from 'react';
 

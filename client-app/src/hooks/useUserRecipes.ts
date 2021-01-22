@@ -1,4 +1,4 @@
-﻿import useSWR, { responseInterface } from "swr";
+import useSWR, { responseInterface } from "swr";
 import { Recipe } from "../types";
 
 const fetcher = async (url: string, token: string) => {

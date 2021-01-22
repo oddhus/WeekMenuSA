@@ -1,4 +1,4 @@
-﻿import {
+import {
   Button,
   FormControl,
   FormErrorMessage,
@@ -70,7 +70,7 @@ export default function Register() {
       validationSchema={SignupSchema}
     >
       {(props: FormikProps<FormValues>) => {
-        const { values, isSubmitting } = props;
+        const { isSubmitting } = props;
         return (
           <Form>
             <Field name="username">

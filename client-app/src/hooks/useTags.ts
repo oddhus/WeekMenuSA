@@ -1,4 +1,4 @@
-﻿import useSWR, { responseInterface } from "swr";
+import useSWR, { responseInterface } from "swr";
 import { Tags } from "../types";
 
 const fetcher = async (url: string) => {

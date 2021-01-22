@@ -1,22 +1,22 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import { BrowserRouter } from 'react-router-dom';
-import { Contexts } from './Contexts'
+import React from "react";
+import ReactDOM from "react-dom";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import { BrowserRouter } from "react-router-dom";
+import { Contexts } from "./Contexts";
 
-const baseUrl = (document.querySelector('base') || {}).href;
-const rootElement = document.getElementById('root');
+const baseUrl = (document.getElementsByTagName("base")[0] || {}).href;
+const rootElement = document.getElementById("root");
 
 ReactDOM.render(
-    <React.StrictMode>
-        <BrowserRouter basename={baseUrl}>
-            <Contexts>
-                <App />
-            </Contexts>
-        </BrowserRouter>
-    </React.StrictMode>,
-    rootElement
+  <React.StrictMode>
+    <BrowserRouter basename={baseUrl}>
+      <Contexts>
+        <App />
+      </Contexts>
+    </BrowserRouter>
+  </React.StrictMode>,
+  rootElement
 );
 
 // If you want to start measuring performance in your app, pass a function

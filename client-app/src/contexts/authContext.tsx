@@ -1,10 +1,21 @@
-import React, { createContext, useCallback, useEffect, useState } from "react";
-import { addMinutes, differenceInMilliseconds, isBefore } from "date-fns";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import {
+  addMinutes,
+  differenceInMilliseconds,
+  isBefore,
+  parseISO,
+} from "date-fns";
 import { User } from "../types";
 
 interface UserData {
   user: User;
-  expirationTime: Date;
+  expirationTime: string;
 }
 
 interface ContextValues {
@@ -14,7 +25,7 @@ interface ContextValues {
   logout: () => void;
 }
 
-export const AuthContext = createContext<Partial<ContextValues>>({
+export const AuthContext = createContext<ContextValues>({
   isLoggedIn: false,
   user: null,
   login: () => {},
@@ -52,7 +63,11 @@ export const AuthProvider: React.FC = ({ children }) => {
     const storedData = localStorage.getItem("userData");
     if (storedData) {
       const data = JSON.parse(storedData) as UserData;
-      if (data && data && isBefore(data.expirationTime, new Date())) {
+      if (
+        data &&
+        data.expirationTime &&
+        isBefore(new Date(), parseISO(data.expirationTime))
+      ) {
         login(data.user, new Date(data.expirationTime));
       }
     }
@@ -77,6 +92,10 @@ export const AuthProvider: React.FC = ({ children }) => {
   );
 };
 
-function isProviderType(value: ContextValues): value is ContextValues {
-  return value !== undefined;
-}
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("AuthContext must be used within a Provider");
+  }
+  return context;
+};

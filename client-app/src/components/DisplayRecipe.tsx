@@ -1,4 +1,4 @@
-﻿import {
+import {
   Center,
   Spinner,
   VStack,
@@ -11,13 +11,11 @@
   HStack,
   Badge,
   Container,
-  color,
 } from "@chakra-ui/react";
 import { TriangleUpIcon, TriangleDownIcon } from "@chakra-ui/icons";
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { useParams } from "react-router";
 import { useRecipe } from "../hooks/useRecipe";
-import { useAuth } from "../hooks/useAuth";
 import { AuthContext } from "../contexts/authContext";
 
 export const DisplayRecipe = () => {

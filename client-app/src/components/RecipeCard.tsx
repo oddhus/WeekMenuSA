@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Badge, Box, HStack, Image } from '@chakra-ui/react';
 import { Recipe } from '../types';
 import { useHistory } from 'react-router';
