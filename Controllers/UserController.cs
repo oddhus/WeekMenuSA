@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using WeekMenuSA.Dtos;
 using WeekMenuSA.Services;
@@ -44,6 +46,19 @@ namespace WeekMenuSA.Controllers
             };
 
             return Ok(_jwtService.CreateToken(user));
+        }
+
+        [Authorize]
+        [HttpDelete]
+        public ActionResult DeleteAccount()
+        {
+            _userService.DeleteUser(GetUserId());
+            return Ok();
+        }
+
+        private string GetUserId()
+        {
+            return HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
         }
     }
 }

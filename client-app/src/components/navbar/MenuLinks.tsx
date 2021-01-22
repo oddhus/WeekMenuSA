@@ -36,7 +36,7 @@ export const MenuLinks: React.FC<Props> = ({ isOpen }) => {
 
   const signedOut = [
     { path: "/register", name: "Register" },
-    { path: "/login", name: "Login" },
+    { path: "/login", name: "Login", isLast: true },
   ];
 
   const buttonMenu = (
@@ -67,7 +67,13 @@ export const MenuLinks: React.FC<Props> = ({ isOpen }) => {
           {route.name}
         </MenuItem>
       ))}
-      <Button color="currentcolor" onClick={() => logout()}>
+      <Button
+        size="small"
+        colorScheme="pink"
+        onClick={() => logout()}
+        fontWeight="normal"
+        _hover={{ backgroundColor: "transparent", textDecoration: "underline" }}
+      >
         Logout
       </Button>
     </React.Fragment>
@@ -76,7 +82,7 @@ export const MenuLinks: React.FC<Props> = ({ isOpen }) => {
   const signedOutList = (
     <React.Fragment>
       {signedOut.map((route) => (
-        <MenuItem key={route.path} to={route.path}>
+        <MenuItem key={route.path} to={route.path} isLast={route.isLast}>
           {route.name}
         </MenuItem>
       ))}

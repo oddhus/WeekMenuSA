@@ -10,6 +10,7 @@ import { Field, FieldProps, Form, Formik, FormikProps } from "formik";
 import React from "react";
 import { useHistory } from "react-router-dom";
 import * as Yup from "yup";
+import { useAuth } from "../contexts/authContext";
 
 interface FormValues {
   username: string;
@@ -20,6 +21,7 @@ interface FormValues {
 export default function Register() {
   const toast = useToast();
   const history = useHistory();
+  const { login } = useAuth();
 
   const SignupSchema = Yup.object().shape({
     username: Yup.string()
@@ -48,15 +50,18 @@ export default function Register() {
         });
 
         if (response.ok) {
-          toast({
-            title: "Account Created",
-            description: "Your account was successfully created",
-            status: "success",
-            duration: 4000,
-            isClosable: true,
-          });
-
-          history.push("/");
+          const data = await response.json();
+          if (data) {
+            toast({
+              title: "Account Created",
+              description: "Your account was successfully created",
+              status: "success",
+              duration: 4000,
+              isClosable: true,
+            });
+            login(data);
+            history.push("/");
+          }
         } else {
           toast({
             title: "Error",

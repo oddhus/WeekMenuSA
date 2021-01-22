@@ -41,8 +41,7 @@ namespace WeekMenuSA.Data.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    Id = table.Column<string>(type: "TEXT", nullable: false),
                     Username = table.Column<string>(type: "TEXT", nullable: true),
                     HashedPassword = table.Column<string>(type: "TEXT", nullable: true),
                     Role = table.Column<string>(type: "TEXT", nullable: true)
@@ -104,8 +103,7 @@ namespace WeekMenuSA.Data.Migrations
                 {
                     UserId = table.Column<string>(type: "TEXT", nullable: false),
                     RecipeId = table.Column<int>(type: "INTEGER", nullable: false),
-                    UserVote = table.Column<int>(type: "INTEGER", nullable: false),
-                    UserId1 = table.Column<int>(type: "INTEGER", nullable: true)
+                    UserVote = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -117,11 +115,11 @@ namespace WeekMenuSA.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Votes_Users_UserId1",
-                        column: x => x.UserId1,
+                        name: "FK_Votes_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -138,11 +136,6 @@ namespace WeekMenuSA.Data.Migrations
                 name: "IX_Votes_RecipeId",
                 table: "Votes",
                 column: "RecipeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Votes_UserId1",
-                table: "Votes",
-                column: "UserId1");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

@@ -27,6 +27,11 @@ namespace WeekMenuSA.Data
             return _db.Users.Where(u => u.Username == username).FirstOrDefault();
         }
 
+        public void DeleteUser(ApplicationUser user)
+        {
+            _db.Users.Remove(user);
+        }
+
         public bool SaveChanges()
         {
             return _db.SaveChanges() >= 0;

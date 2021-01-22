@@ -26,7 +26,7 @@ export const DisplayRecipe = () => {
 
   const onVote = async (vote: number) => {
     setLoadingVote(true);
-    const response = await fetch("vote/" + recipeId, {
+    const response = await fetch("/vote/" + recipeId, {
       method: "POST",
       headers: !user?.token
         ? {}

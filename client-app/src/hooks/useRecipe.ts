@@ -2,7 +2,6 @@ import useSWR, { responseInterface } from "swr";
 import { Recipe } from "../types";
 
 const fetcher = async (url: string, token: string) => {
-  console.log(url);
   const response = await fetch(url, {
     headers: !token ? {} : { Authorization: `Bearer ${token}` },
   });
@@ -14,7 +13,7 @@ export function useRecipe(
   token: string | null | undefined
 ) {
   const { data, mutate, error } = useSWR(
-    id ? ["recipe/" + id, token] : null,
+    id ? ["/recipe/" + id, token] : null,
     fetcher
   ) as responseInterface<Recipe, any>;
 

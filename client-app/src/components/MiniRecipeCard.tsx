@@ -51,6 +51,7 @@ export const MiniRecipeCard: React.FC<Props> = (props) => {
         overflow="hidden"
         _hover={{
           boxShadow: "rgba(0, 0, 0, 0.22) 0px 19px 43px",
+          cursor: "pointer",
           //transform: "translate3d(0px, -1px, 0px)"
         }}
       >

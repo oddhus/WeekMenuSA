@@ -9,6 +9,8 @@ import { Recipes } from "./components/Recipes";
 import ProtectedRoute from "./routes/ProtectedRoutes";
 import Register from "./components/Register";
 import Login from "./components/Login";
+import { Account } from "./components/Account";
+import NoUserRoute from "./routes/NoUserRoute";
 
 function App() {
   return (
@@ -16,11 +18,12 @@ function App() {
       <Route exact path="/" component={Home} />
       <Route exact path="/recipes" component={Recipes} />
       <Route path="/recipes/:recipeId" component={DisplayRecipe} />
-      <Route path="/login" component={Login} />
-      <Route path="/register" component={Register} />
+      <NoUserRoute path="/login" component={Login} />
+      <NoUserRoute path="/register" component={Register} />
       <ProtectedRoute path="/my-recipes" component={UserRecipes} />
       <ProtectedRoute path="/create-recipes" component={CreateRecipe} />
       <ProtectedRoute path="/edit/:recipeId" component={CreateRecipe} />
+      <ProtectedRoute path="/account" component={Account} />
     </Layout>
   );
 }

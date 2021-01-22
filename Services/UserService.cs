@@ -49,5 +49,14 @@ namespace WeekMenuSA.Services
                 return user;
             }
         }
+
+        public void DeleteUser(string userId)
+        {
+            if (userId != null)
+            {
+                _userRepository.DeleteUser(new ApplicationUser() { Id = userId });
+                _userRepository.SaveChanges();
+            }
+        }
     }
 }

@@ -44,6 +44,7 @@ namespace WeekMenuSA.Data
                 .Include(r => r.Ingredients)
                 .Include(r => r.Votes)
                 .Include(r => r.Tags)
+                .AsSplitQuery()
                 .OrderBy(r => r.Id)
                 .Skip(offset)
                 .FirstOrDefault();
@@ -58,6 +59,7 @@ namespace WeekMenuSA.Data
                 .Include(r => r.Ingredients)
                 .Include(r => r.Votes)
                 .Include(r => r.Tags)
+                .AsSplitQuery()
                 .OrderBy(r => r.Id)
                 .Skip(offset)
                 .Take(amount);
@@ -70,6 +72,7 @@ namespace WeekMenuSA.Data
                 .Include(r => r.Ingredients)
                 .Include(r => r.Votes)
                 .Include(r => r.Tags)
+                .AsSplitQuery()
                 .First();
         }
 
@@ -80,6 +83,7 @@ namespace WeekMenuSA.Data
                 .Include(r => r.Ingredients)
                 .Include(r => r.Votes)
                 .Include(r => r.Tags)
+                .AsSplitQuery()
                 .ToList();
         }
 
@@ -96,6 +100,7 @@ namespace WeekMenuSA.Data
                 .Include(r => r.Ingredients)
                 .Include(r => r.Votes)
                 .Include(r => r.Tags)
+                .AsSplitQuery()
                 .OrderBy(r => r.Title),
                 recipeParameters.PageNumber,
                 recipeParameters.PageSize);

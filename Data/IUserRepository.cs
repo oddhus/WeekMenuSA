@@ -13,6 +13,8 @@ namespace WeekMenuSA.Data
 
         void CreateUser(ApplicationUser user);
 
+        void DeleteUser(ApplicationUser user);
+
         ApplicationUser GetUserByUsername(string username);
     }
 }
