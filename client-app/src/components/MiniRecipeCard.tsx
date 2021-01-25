@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -38,7 +38,7 @@ export const MiniRecipeCard: React.FC<Props> = (props) => {
 
   const onSwap = async () => {
     setLoading(true);
-    await props.onSwap(props.recipe.id);
+    props.onSwap(props.recipe.id);
   };
 
   return (
@@ -71,7 +71,7 @@ export const MiniRecipeCard: React.FC<Props> = (props) => {
           </Box>
           <Box pb={2}>
             <HStack justify="space-betweens">
-              <Text>Likes: {props.recipe.vote}</Text>
+              <Text>Score: {props.recipe.vote}</Text>
               <Box h="25px">
                 <Divider orientation="vertical" />
               </Box>

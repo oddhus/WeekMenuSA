@@ -40,9 +40,9 @@ namespace WeekMenuSA.Controllers
         }
 
         [HttpGet("weekmenu")]
-        public List<ReadRecipeDto> GetRandomRecipes([FromQuery] int amount)
+        public List<ReadRecipeDto> GetRandomRecipes([FromQuery] RandomRecipeParameters parameters)
         {
-            return _recipeService.GetRandomRecipes(amount, GetUserId());
+            return _recipeService.GetRandomRecipes(parameters, GetUserId());
         }
 
         [HttpGet("weekmenu/item")]

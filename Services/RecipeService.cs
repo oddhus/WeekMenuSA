@@ -85,9 +85,9 @@ namespace WeekMenuSA.Services
             return _mapper.Map<ReadRecipeDto>(_recipeRepository.GetRandomRecipe(excludeId), opt => opt.Items["UserId"] = userId);
         }
 
-        internal List<ReadRecipeDto> GetRandomRecipes(int amount, string id)
+        internal List<ReadRecipeDto> GetRandomRecipes(RandomRecipeParameters parameters, string id)
         {
-            return _mapper.Map<List<ReadRecipeDto>>(_recipeRepository.GetRandomRecipes(amount), opt => opt.Items["UserId"] = id);
+            return _mapper.Map<List<ReadRecipeDto>>(_recipeRepository.GetRandomRecipes(parameters), opt => opt.Items["UserId"] = id);
         }
 
         internal ReadRecipeDto GetRecipe(int id, string userId)

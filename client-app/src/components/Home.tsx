@@ -6,9 +6,6 @@ import {
   VStack,
   Button,
   useDisclosure,
-  Box,
-  SkeletonCircle,
-  SkeletonText,
 } from "@chakra-ui/react";
 import { useWeekmenu } from "../hooks/useWeekmenu";
 import { generateShoppingList } from "../utils/shoppingListGenerator";
@@ -19,6 +16,8 @@ import { RecipePickerModal } from "./RecipePickerModal";
 import { useRecipes } from "../hooks/useRecipes";
 import { stringify } from "query-string";
 import { AuthContext } from "../contexts/authContext";
+import { MiniRecipeSkeleton } from "./MiniRecipeSkeleton";
+import { WeekMenuOptions } from "./WeekMenuOptions";
 
 interface Query {
   searchText: string | undefined;
@@ -26,6 +25,10 @@ interface Query {
 }
 
 export const Home: React.FC = () => {
+  const [weekSize, setWeekSize] = useState(5);
+  const [preferredTags, setPreferredTags] = useState<{ tags: string[] }>({
+    tags: [],
+  });
   const [getShoppingList, setGetShoppingList] = useState(false);
   const [currentItem, setCurrentItem] = useState<number | undefined>();
   const [type, setType] = useState<"search" | "myrecipe" | undefined>();
@@ -38,7 +41,8 @@ export const Home: React.FC = () => {
   const { user } = useContext(AuthContext);
 
   const { loading, data, onSwapAll, onSwap, onIdSwap } = useWeekmenu(
-    5,
+    weekSize,
+    stringify(preferredTags),
     user?.token
   );
 
@@ -59,6 +63,11 @@ export const Home: React.FC = () => {
       await onIdSwap(currentItem, newId);
     }
   };
+  console.log(stringify(preferredTags));
+
+  const swapAll = () => {
+    onSwapAll(weekSize, stringify(preferredTags));
+  };
 
   return (
     <React.Fragment>
@@ -74,22 +83,22 @@ export const Home: React.FC = () => {
         setQuery={setQuery}
         query={query}
       />
-      <VStack>
+      <VStack spacing={4}>
+        <WeekMenuOptions
+          weekSize={weekSize}
+          setWeekSize={setWeekSize}
+          preferredTags={preferredTags}
+          setPreferredTags={setPreferredTags}
+          swapAll={swapAll}
+        />
         {loading ? (
-          <SimpleGrid columns={{ sm: 3, md: 5 }} spacing={2}>
-            {[...Array(5)].map((_, i) => (
-              <Box padding="10" boxShadow="lg" bg="white" key={i} maxW="sm">
-                <SkeletonCircle size="24" />
-                <SkeletonText mt="4" noOfLines={2} spacing="6" />
-              </Box>
-            ))}
-          </SimpleGrid>
+          <MiniRecipeSkeleton />
         ) : !data ? (
           <Text>No data</Text>
         ) : (
           <Center>
             <SimpleGrid columns={{ sm: 3, md: 5 }} spacing={2}>
-              {data.map((recipe) => (
+              {data!.map((recipe) => (
                 <MiniRecipeCard
                   recipe={recipe}
                   key={recipe.id}
@@ -103,7 +112,6 @@ export const Home: React.FC = () => {
             </SimpleGrid>
           </Center>
         )}
-        <Button onClick={() => onSwapAll()}>Swap all</Button>
         <Button
           onClick={() => setGetShoppingList((getList) => !getList)}
           disabled={!data}

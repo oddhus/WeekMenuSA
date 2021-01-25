@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { number } from "yup/lib/locale";
 import { Recipe } from "../types";
 
 const weekmenuItemFetcher = async (
@@ -21,14 +22,25 @@ const weekmenuSpecificItemFetcher = async (
   return await response.json();
 };
 
-const weekmenuFetcher = async (token: string | null | undefined) => {
-  const response = await fetch("recipe/weekmenu?amount=5", {
-    headers: !token ? {} : { Authorization: `Bearer ${token}` },
-  });
+const weekmenuFetcher = async (
+  token: string | null | undefined,
+  amount: number,
+  urlTags: string
+) => {
+  const response = await fetch(
+    "/recipe/weekmenu?weekLength=" + amount + urlTags,
+    {
+      headers: !token ? {} : { Authorization: `Bearer ${token}` },
+    }
+  );
   return await response.json();
 };
 
-export function useWeekmenu(amount: number, token: string | null | undefined) {
+export function useWeekmenu(
+  amount: number,
+  tags: string | null,
+  token: string | null | undefined
+) {
   const [data, setData] = useState<Recipe[] | null>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>();
@@ -50,11 +62,15 @@ export function useWeekmenu(amount: number, token: string | null | undefined) {
     }
 
     if (!parsedData || parsedData.length < 5) {
+      const urlTags = tags ? "&" + tags : "";
       const runHandler = async () => {
         try {
-          const response = await fetch("recipe/weekmenu/?amount=" + amount, {
-            headers: !token ? {} : { Authorization: `Bearer ${token}` },
-          });
+          const response = await fetch(
+            "recipe/weekmenu/?weekLength=" + amount + urlTags,
+            {
+              headers: !token ? {} : { Authorization: `Bearer ${token}` },
+            }
+          );
           const data = await response.json();
           if (isCanceled) {
             return;
@@ -140,10 +156,12 @@ export function useWeekmenu(amount: number, token: string | null | undefined) {
     }
   };
 
-  const onSwapAll = async () => {
+  const onSwapAll = async (amount: number, tags: string | null) => {
     setLoading(true);
+    const urlTags = tags ? "&" + tags : "";
     try {
-      const data = await weekmenuFetcher(token);
+      const data = await weekmenuFetcher(token, amount, urlTags);
+      console.log(data);
       localStorage.setItem("weekmenu", JSON.stringify(data));
       setData(data);
     } catch (e) {

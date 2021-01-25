@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+﻿import React, { useContext, useEffect, useState } from "react";
 import {
   Button,
   FormControl,
@@ -101,7 +101,7 @@ export const CreateRecipe = () => {
       onSubmit={async (values, actions) => {
         console.log(values);
         const response = await fetch(
-          recipeId ? "recipe/" + recipeId : "recipe",
+          recipeId ? "/recipe/" + recipeId : "recipe",
           {
             method: recipeId ? "PUT" : "POST",
             headers: !user?.token

@@ -14,7 +14,7 @@ namespace WeekMenuSA.Data
 
         Recipe GetRandomRecipe(List<int> excludeId);
 
-        IEnumerable<Recipe> GetRandomRecipes(int amount);
+        IEnumerable<Recipe> GetRandomRecipes(RandomRecipeParameters parameters);
 
         IEnumerable<Recipe> GetRecipesByUserId(string id);
 

@@ -9,7 +9,7 @@ export class Layout extends Component {
     return (
       <div>
         <NavBar />
-        <Container maxW="xl">{this.props.children}</Container>
+        <Container maxW="4xl">{this.props.children}</Container>
       </div>
     );
   }
