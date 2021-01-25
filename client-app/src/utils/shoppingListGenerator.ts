@@ -1,5 +1,5 @@
 import { Ingredients, Recipe } from "../types";
-import * as _ from "lodash";
+import _ from "lodash";
 import convert from "convert";
 
 export const generateShoppingList = (recipes: Recipe[]) => {

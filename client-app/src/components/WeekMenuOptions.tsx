@@ -20,11 +20,13 @@ import React from "react";
 import { useTags } from "../hooks/useTags";
 
 interface Props {
+  hasChanged: boolean;
   weekSize: number;
   preferredTags: { tags: string[] };
   setWeekSize: React.Dispatch<React.SetStateAction<number>>;
   setPreferredTags: React.Dispatch<React.SetStateAction<{ tags: string[] }>>;
   swapAll: () => void;
+  resetChoices: () => void;
 }
 
 export const WeekMenuOptions: React.FC<Props> = (props) => {
@@ -82,8 +84,24 @@ export const WeekMenuOptions: React.FC<Props> = (props) => {
           </FormControl>
         </WrapItem>
         <WrapItem alignItems="center">
+          <Box pr={2}>
+            <Button
+              onClick={() => {
+                props.resetChoices();
+                props.swapAll();
+              }}
+              variant="outline"
+            >
+              Reset
+            </Button>
+          </Box>
           <Box>
-            <Button onClick={() => props.swapAll()}>Swap all</Button>
+            <Button
+              {...(props.hasChanged && { colorScheme: "pink" })}
+              onClick={() => props.swapAll()}
+            >
+              Swap all
+            </Button>
           </Box>
         </WrapItem>
       </Wrap>

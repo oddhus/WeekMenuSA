@@ -18,6 +18,7 @@ import { stringify } from "query-string";
 import { AuthContext } from "../contexts/authContext";
 import { MiniRecipeSkeleton } from "./MiniRecipeSkeleton";
 import { WeekMenuOptions } from "./WeekMenuOptions";
+import { useHasChanged } from "../hooks/useHasChanged";
 
 interface Query {
   searchText: string | undefined;
@@ -39,6 +40,7 @@ export const Home: React.FC = () => {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { user } = useContext(AuthContext);
+  const { hasChanged, reset } = useHasChanged(weekSize, preferredTags.tags);
 
   const { loading, data, onSwapAll, onSwap, onIdSwap } = useWeekmenu(
     weekSize,
@@ -63,10 +65,17 @@ export const Home: React.FC = () => {
       await onIdSwap(currentItem, newId);
     }
   };
-  console.log(stringify(preferredTags));
 
   const swapAll = () => {
     onSwapAll(weekSize, stringify(preferredTags));
+    reset();
+  };
+
+  const resetChoices = () => {
+    setWeekSize(5);
+    setPreferredTags({
+      tags: [],
+    });
   };
 
   return (
@@ -90,6 +99,8 @@ export const Home: React.FC = () => {
           preferredTags={preferredTags}
           setPreferredTags={setPreferredTags}
           swapAll={swapAll}
+          hasChanged={hasChanged}
+          resetChoices={resetChoices}
         />
         {loading ? (
           <MiniRecipeSkeleton />
