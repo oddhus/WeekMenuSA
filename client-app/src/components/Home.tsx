@@ -76,6 +76,8 @@ export const Home: React.FC = () => {
     setPreferredTags({
       tags: [],
     });
+    onSwapAll(5, null);
+    reset();
   };
 
   return (

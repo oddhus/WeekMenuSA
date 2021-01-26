@@ -52,9 +52,19 @@ namespace WeekMenuSA.Data
 
         public IEnumerable<Recipe> GetRandomRecipes(RandomRecipeParameters paramteres)
         {
-            int total = _db.Recipes.Count() - paramteres.WeekLength;
+            int total = 0;
+            if (paramteres.Tags != null)
+            {
+                total = _db.Recipes.Where(r => r.Tags.Any(t => paramteres.Tags.Contains(t.Name))).Count() - paramteres.WeekLength;
+            }
+            else
+            {
+                total = _db.Recipes.Count() - paramteres.WeekLength;
+            }
+
             Random r = new Random();
             int offset = total > 0 ? r.Next(0, total) : 0;
+
             return _db.Recipes
                 .Where(r =>
                     (paramteres.Tags == null || paramteres.Tags.Count <= 0) ||

@@ -35,7 +35,7 @@ namespace WeekMenuSA.Data
 
         public IEnumerable<Tag> GetAllTags()
         {
-            return _db.Tags.ToList();
+            return _db.Tags.OrderBy(t => t.Name).ToList();
         }
 
         public bool SaveChanges()

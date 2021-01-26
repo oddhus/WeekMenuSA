@@ -88,7 +88,6 @@ export const WeekMenuOptions: React.FC<Props> = (props) => {
             <Button
               onClick={() => {
                 props.resetChoices();
-                props.swapAll();
               }}
               variant="outline"
             >

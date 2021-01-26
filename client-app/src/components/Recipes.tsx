@@ -21,6 +21,7 @@ import { stringify } from "query-string";
 import { Pagination } from "./Pagination";
 import { SearchBar } from "./SearchBar";
 import { AuthContext } from "../contexts/authContext";
+import { useHasChanged } from "../hooks/useHasChanged";
 
 export const Recipes: React.FC = () => {
   const { user } = useContext(AuthContext);
@@ -32,7 +33,7 @@ export const Recipes: React.FC = () => {
     tags: withDefault(ArrayParam, []),
   });
 
-  const { pageNumber, tags } = query;
+  const { pageNumber, pageSize, tags } = query;
 
   const { data, loading, empty } = useRecipes(
     user?.token,

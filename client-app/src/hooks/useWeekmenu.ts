@@ -27,6 +27,7 @@ const weekmenuFetcher = async (
   amount: number,
   urlTags: string
 ) => {
+  console.log(urlTags);
   const response = await fetch(
     "/recipe/weekmenu?weekLength=" + amount + urlTags,
     {
@@ -161,7 +162,6 @@ export function useWeekmenu(
     const urlTags = tags ? "&" + tags : "";
     try {
       const data = await weekmenuFetcher(token, amount, urlTags);
-      console.log(data);
       localStorage.setItem("weekmenu", JSON.stringify(data));
       setData(data);
     } catch (e) {

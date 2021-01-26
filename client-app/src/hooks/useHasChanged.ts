@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import _ from "lodash";
 
-export const useHasChanged = (val: number, val2: string[]) => {
+export const useHasChanged = (val: number, val2: (string | null)[]) => {
   const [hasChanged, setHasChanged] = useState(false);
   const prevVal = usePrevious(val);
   const prevVal2 = usePrevious(val2);
