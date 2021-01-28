@@ -36,7 +36,6 @@ export default function Login() {
     <Formik
       initialValues={{ username: "", password: "" }}
       onSubmit={async (values, actions) => {
-        console.log(values);
         const response = await fetch("user/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },

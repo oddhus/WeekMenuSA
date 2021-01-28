@@ -17,7 +17,6 @@ export const useHasChanged = (val: number, val2: (string | null)[]) => {
   }, [val, prevVal, hasChanged]);
 
   useEffect(() => {
-    console.log(prevVal2, val2);
     if (!_.isEqual(prevVal2, val2)) {
       setHasChanged(true);
     }
