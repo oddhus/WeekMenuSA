@@ -58,7 +58,7 @@ export const Home: React.FC = () => {
     data: searchRecipes,
     loading: searchRecipesLoading,
     error: searchRecipeError,
-  } = useRecipes(user?.token, stringify(query), isOpen && type === "search");
+  } = useRecipes(stringify(query), isOpen && type === "search");
 
   const pickRecipes = async (newId: number) => {
     if (currentItem) {

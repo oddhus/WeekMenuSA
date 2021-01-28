@@ -46,11 +46,14 @@ namespace WeekMenuSA
             {
                 x.TokenValidationParameters = new TokenValidationParameters
                 {
+                    ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = false,
                     ValidateAudience = false,
-                    // ValidIssuer = "localhost",
-                    //ValidAudience = "localhost"
+                    ValidateLifetime = true,
+                    ValidIssuer = Configuration.GetSection("JwtConfig").GetSection("Issuer").Value,
+                    ValidAudience = Configuration.GetSection("JwtConfig").GetSection("Audience").Value,
+                    ClockSkew = TimeSpan.Zero
                 };
             });
 

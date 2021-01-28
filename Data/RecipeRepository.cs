@@ -86,7 +86,7 @@ namespace WeekMenuSA.Data
                 .Include(r => r.Votes)
                 .Include(r => r.Tags)
                 .AsSplitQuery()
-                .First();
+                .FirstOrDefault();
         }
 
         public IEnumerable<Recipe> GetRecipesByUserId(string id)

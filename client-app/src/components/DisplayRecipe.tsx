@@ -1,4 +1,4 @@
-import {
+﻿import {
   Center,
   Spinner,
   VStack,
@@ -13,31 +13,24 @@ import {
   Container,
 } from "@chakra-ui/react";
 import { TriangleUpIcon, TriangleDownIcon } from "@chakra-ui/icons";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { useParams } from "react-router";
 import { useRecipe } from "../hooks/useRecipe";
-import { AuthContext } from "../contexts/authContext";
+import { fetch } from "../utils/refreshFetch";
 
 export const DisplayRecipe = () => {
-  const { user } = useContext(AuthContext);
   const { recipeId } = useParams<{ recipeId: string | undefined }>();
   const [loadingVote, setLoadingVote] = useState(false);
-  const { data, loading, mutate } = useRecipe(recipeId, user?.token);
+  const { data, loading, mutate } = useRecipe(recipeId);
 
   const onVote = async (vote: number) => {
     setLoadingVote(true);
-    const response = await fetch("/vote/" + recipeId, {
+    const data = await fetch("/vote/" + recipeId, {
       method: "POST",
-      headers: !user?.token
-        ? {}
-        : {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${user?.token}`,
-          },
       body: JSON.stringify({ vote }),
     });
 
-    if (response.ok && (await response.json())) {
+    if (data.response.ok) {
       mutate((recipe) => {
         if (!recipe) {
           return;

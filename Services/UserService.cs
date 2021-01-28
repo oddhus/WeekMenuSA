@@ -13,31 +13,38 @@ namespace WeekMenuSA.Services
     public class UserService
     {
         private readonly IUserRepository _userRepository;
-
+        private readonly JwtService _jwtService;
         private readonly IMapper _mapper;
 
-        public UserService(IUserRepository userRepository, IMapper mapper)
+        public UserService(IUserRepository userRepository, IMapper mapper, JwtService jwtService)
         {
+            _jwtService = jwtService;
             _userRepository = userRepository;
             _mapper = mapper;
         }
 
-        public ApplicationUser CreateUser(CreateUserDto userDto)
+        public UserDto CreateUser(CreateUserDto createUserDto)
         {
-            var foundUser = _userRepository.GetUserByUsername(userDto.Username);
+            var foundUser = _userRepository.GetUserByUsername(createUserDto.Username);
             if (foundUser != null)
             {
                 return null;
             }
 
-            var user = _mapper.Map<ApplicationUser>(userDto);
-            user.Role = "Creator";
+            var user = _mapper.Map<ApplicationUser>(createUserDto);
+
             _userRepository.CreateUser(user);
+            user.Role = "Creator";
+
+            var userDto = _jwtService.CreateToken(user);
+            user.RefreshToken = userDto.RefreshToken;
+
             _userRepository.SaveChanges();
-            return user;
+
+            return userDto;
         }
 
-        public ApplicationUser AuthenticateUser(LoginDto loginDto)
+        public UserDto AuthenticateUser(LoginDto loginDto)
         {
             var user = _userRepository.GetUserByUsername(loginDto.Username);
             if (user == null || !BC.Verify(loginDto.Password, user.HashedPassword))
@@ -46,7 +53,30 @@ namespace WeekMenuSA.Services
             }
             else
             {
-                return user;
+                var userDto = _jwtService.CreateToken(user);
+                user.RefreshToken = userDto.RefreshToken;
+                _userRepository.SaveChanges();
+
+                return userDto;
+            }
+        }
+
+        public UserDto RefreshUserToken(RefreshUserDto refreshUserDto)
+        {
+            var name = _jwtService.ExtractName(refreshUserDto.Token);
+            var user = _userRepository.GetUserByUsername(name);
+            if (user == null || user.RefreshToken != refreshUserDto.RefreshToken)
+            {
+                return null;
+            }
+            else
+            {
+                //Update refresh token
+                var userDto = _jwtService.CreateToken(user);
+                user.RefreshToken = userDto.RefreshToken;
+                _userRepository.SaveChanges();
+
+                return userDto;
             }
         }
 

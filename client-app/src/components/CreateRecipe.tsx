@@ -59,10 +59,7 @@ export const CreateRecipe = () => {
   const { user } = useContext(AuthContext);
 
   const { data, empty, loading } = useTags();
-  const { data: recipeData, loading: recipeLoading } = useRecipe(
-    recipeId,
-    user?.token
-  );
+  const { data: recipeData, loading: recipeLoading } = useRecipe(recipeId);
   const { mutate } = useUserRecipes(user?.token);
 
   useEffect(() => {

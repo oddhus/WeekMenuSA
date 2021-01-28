@@ -1,23 +1,18 @@
-import useSWR, { responseInterface } from "swr";
+﻿import useSWR, { responseInterface } from "swr";
 import { Recipe } from "../types";
+import { fetch } from "../utils/refreshFetch";
 
-const fetcher = async (url: string, token: string) => {
-  const response = await fetch(url, {
-    headers: !token ? {} : { Authorization: `Bearer ${token}` },
-  });
-  return await response.json();
+const fetcher = async (url: string) => {
+  const response = await fetch(url);
+  console.log(response);
+  return response.body;
 };
 
-export function useRecipe(
-  id: string | null | undefined,
-  token: string | null | undefined
-) {
+export function useRecipe(id: string | null | undefined) {
   const { data, mutate, error } = useSWR(
-    id ? ["/recipe/" + id, token] : null,
+    id ? ["/recipe/" + id] : null,
     fetcher
   ) as responseInterface<Recipe, any>;
-
-  console.log(id);
 
   const loading = !data && !error;
 

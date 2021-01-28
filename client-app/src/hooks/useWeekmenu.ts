@@ -1,40 +1,22 @@
 import { useEffect, useState } from "react";
-import { number } from "yup/lib/locale";
 import { Recipe } from "../types";
+import { fetch } from "../utils/refreshFetch";
 
-const weekmenuItemFetcher = async (
-  token: string | null | undefined,
-  excludeIds: string
-) => {
-  const response = await fetch("recipe/weekmenu/item" + excludeIds, {
-    headers: !token ? {} : { Authorization: `Bearer ${token}` },
-  });
-  return await response.json();
+const weekmenuItemFetcher = async (excludeIds: string) => {
+  const response = await fetch("recipe/weekmenu/item" + excludeIds);
+  return response.body;
 };
 
-const weekmenuSpecificItemFetcher = async (
-  token: string | null | undefined,
-  id: number
-) => {
-  const response = await fetch("recipe/" + id, {
-    headers: !token ? {} : { Authorization: `Bearer ${token}` },
-  });
-  return await response.json();
+const weekmenuSpecificItemFetcher = async (id: number) => {
+  const response = await fetch("recipe/" + id);
+  return response.body;
 };
 
-const weekmenuFetcher = async (
-  token: string | null | undefined,
-  amount: number,
-  urlTags: string
-) => {
-  console.log(urlTags);
+const weekmenuFetcher = async (amount: number, urlTags: string) => {
   const response = await fetch(
-    "/recipe/weekmenu?weekLength=" + amount + urlTags,
-    {
-      headers: !token ? {} : { Authorization: `Bearer ${token}` },
-    }
+    "/recipe/weekmenu?weekLength=" + amount + urlTags
   );
-  return await response.json();
+  return response.body;
 };
 
 export function useWeekmenu(
@@ -67,12 +49,9 @@ export function useWeekmenu(
       const runHandler = async () => {
         try {
           const response = await fetch(
-            "recipe/weekmenu/?weekLength=" + amount + urlTags,
-            {
-              headers: !token ? {} : { Authorization: `Bearer ${token}` },
-            }
+            "recipe/weekmenu/?weekLength=" + amount + urlTags
           );
-          const data = await response.json();
+          const data = response.body as Recipe[];
           if (isCanceled) {
             return;
           }
@@ -94,7 +73,7 @@ export function useWeekmenu(
       isCanceled = true;
       controller.abort();
     };
-  }, [amount, token]);
+  }, [amount, token, tags]);
 
   const onSwap = async (id: number) => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -109,7 +88,7 @@ export function useWeekmenu(
     }, "/?");
 
     try {
-      const recipe = await weekmenuItemFetcher(token, excludeRecipes);
+      const recipe = (await weekmenuItemFetcher(excludeRecipes)) as Recipe;
       if (recipe) {
         const index = data.findIndex((recipe) => recipe.id === id);
         const newWeekmenu = [
@@ -140,7 +119,7 @@ export function useWeekmenu(
     }
 
     try {
-      const recipe = await weekmenuSpecificItemFetcher(token, newId);
+      const recipe = (await weekmenuSpecificItemFetcher(newId)) as Recipe;
       if (recipe) {
         const index = data.findIndex((recipe) => recipe.id === oldId);
         const newWeekmenu = [
@@ -161,7 +140,7 @@ export function useWeekmenu(
     setLoading(true);
     const urlTags = tags ? "&" + tags : "";
     try {
-      const data = await weekmenuFetcher(token, amount, urlTags);
+      const data = (await weekmenuFetcher(amount, urlTags)) as Recipe[];
       localStorage.setItem("weekmenu", JSON.stringify(data));
       setData(data);
     } catch (e) {

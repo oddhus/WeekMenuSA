@@ -5,18 +5,12 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import {
-  addMinutes,
-  differenceInMilliseconds,
-  isBefore,
-  parseISO,
-} from "date-fns";
 import { User } from "../types";
-
-interface UserData {
-  user: User;
-  expirationTime: string;
-}
+import {
+  removeStoredUserData,
+  retrieveUserWithToken,
+  saveUserWithToken,
+} from "../utils/storageActions";
 
 interface ContextValues {
   isLoggedIn: boolean;
@@ -32,58 +26,37 @@ export const AuthContext = createContext<ContextValues>({
   logout: () => {},
 });
 
-let logoutTimer: any;
-
 export const AuthProvider: React.FC = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [tokenExpirationTime, setTokenExpirationTime] = useState<Date | null>();
 
-  const login = useCallback(
-    (user: User, expirationTime = addMinutes(new Date(), 30)) => {
-      setUser(user);
-      setTokenExpirationTime(expirationTime);
-      localStorage.setItem(
-        "userData",
-        JSON.stringify({
-          user,
-          expirationTime: expirationTime.toISOString(),
-        })
-      );
-    },
-    []
-  );
+  const login = useCallback((user: User) => {
+    setUser(user);
+    saveUserWithToken(user);
+  }, []);
 
   const logout = useCallback(() => {
     setUser(null);
-    setTokenExpirationTime(null);
-    localStorage.removeItem("userData");
+    removeStoredUserData();
   }, []);
 
   useEffect(() => {
-    const storedData = localStorage.getItem("userData");
-    if (storedData) {
-      const data = JSON.parse(storedData) as UserData;
-      if (
-        data &&
-        data.expirationTime &&
-        isBefore(new Date(), parseISO(data.expirationTime))
-      ) {
-        login(data.user, new Date(data.expirationTime));
-      }
+    const user = retrieveUserWithToken();
+    if (user) {
+      login(user);
     }
   }, [login]);
 
-  useEffect(() => {
-    if (user && tokenExpirationTime) {
-      const remainingTime = differenceInMilliseconds(
-        tokenExpirationTime,
-        new Date()
-      );
-      logoutTimer = setTimeout(logout, remainingTime);
-    } else {
-      clearTimeout(logoutTimer);
-    }
-  }, [user, logout, tokenExpirationTime]);
+  // useEffect(() => {
+  //   if (user && tokenExpirationTime) {
+  //     const remainingTime = differenceInMilliseconds(
+  //       tokenExpirationTime,
+  //       new Date()
+  //     );
+  //     logoutTimer = setTimeout(logout, remainingTime);
+  //   } else {
+  //     clearTimeout(logoutTimer);
+  //   }
+  // }, [user, logout, tokenExpirationTime]);
 
   return (
     <AuthContext.Provider value={{ isLoggedIn: !!user, user, login, logout }}>

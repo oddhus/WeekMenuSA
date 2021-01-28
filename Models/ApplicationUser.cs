@@ -17,5 +17,6 @@ namespace WeekMenuSA.Models
         public string HashedPassword { get; set; }
         public string Role { get; set; }
         public ICollection<Vote> Votes { get; set; }
+        public string RefreshToken { get; set; }
     }
 }

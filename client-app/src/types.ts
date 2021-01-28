@@ -1,7 +1,13 @@
-export interface User {
+﻿export interface User {
   username: string;
   id: string;
   token: string;
+  refreshToken: string;
+}
+
+export interface UserData {
+  user: User;
+  expirationTime: string;
 }
 
 export interface Recipe {

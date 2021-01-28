@@ -15,12 +15,10 @@ namespace WeekMenuSA.Controllers
     [Route("[controller]")]
     public class UserController : ControllerBase
     {
-        private readonly JwtService _jwtService;
         private readonly UserService _userService;
 
         public UserController(JwtService jwtService, UserService userService)
         {
-            _jwtService = jwtService;
             _userService = userService;
         }
 
@@ -33,7 +31,7 @@ namespace WeekMenuSA.Controllers
                 return Forbid();
             };
 
-            return Ok(_jwtService.CreateToken(user));
+            return Ok(user);
         }
 
         [HttpPost("register")]
@@ -45,8 +43,22 @@ namespace WeekMenuSA.Controllers
                 return BadRequest();
             };
 
-            return Ok(_jwtService.CreateToken(user));
+            return Ok(user);
         }
+
+        [HttpPost("refresh")]
+        public ActionResult<UserDto> RefreshToken([FromBody] RefreshUserDto refreshUserDto)
+        {
+            var user = _userService.RefreshUserToken(refreshUserDto);
+            if (user == null)
+            {
+                return Unauthorized();
+            };
+
+            return Ok(user);
+        }
+
+
 
         [Authorize]
         [HttpDelete]
