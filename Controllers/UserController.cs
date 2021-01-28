@@ -28,7 +28,7 @@ namespace WeekMenuSA.Controllers
             var user = _userService.AuthenticateUser(loginDto);
             if (user == null)
             {
-                return Forbid();
+                return BadRequest();
             };
 
             return Ok(user);

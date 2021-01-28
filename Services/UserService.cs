@@ -25,7 +25,7 @@ namespace WeekMenuSA.Services
 
         public UserDto CreateUser(CreateUserDto createUserDto)
         {
-            var foundUser = _userRepository.GetUserByUsername(createUserDto.Username);
+            var foundUser = _userRepository.GetUserByUsername(createUserDto.Username.ToLower());
             if (foundUser != null)
             {
                 return null;
@@ -35,6 +35,7 @@ namespace WeekMenuSA.Services
 
             _userRepository.CreateUser(user);
             user.Role = "Creator";
+            user.Username = createUserDto.Username.ToLower();
 
             var userDto = _jwtService.CreateToken(user);
             user.RefreshToken = userDto.RefreshToken;
